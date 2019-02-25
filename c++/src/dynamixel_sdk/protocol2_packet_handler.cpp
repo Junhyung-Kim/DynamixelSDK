@@ -28,6 +28,7 @@
 #endif
 
 #include <stdio.h>
+#include <iostream>
 #include <string.h>
 #include <stdlib.h>
 
@@ -409,6 +410,15 @@ int Protocol2PacketHandler::txRxPacket(PortHandler *port, uint8_t *txpacket, uin
 
   // tx packet
   result = txPacket(port, txpacket);
+/*
+  std::cout << "txpacket" << std::endl;
+  for(int i=0; i <16; i++)
+  {
+    std::cout<< " " <<std::hex << (int)txpacket[i];
+  }
+  std::cout << ""<<std::endl;
+*/
+
   if (result != COMM_SUCCESS)
     return result;
 
@@ -439,7 +449,14 @@ int Protocol2PacketHandler::txRxPacket(PortHandler *port, uint8_t *txpacket, uin
   do {
     result = rxPacket(port, rxpacket);
   } while (result == COMM_SUCCESS && txpacket[PKT_ID] != rxpacket[PKT_ID]);
-
+/*
+  std::cout << "rxpacket" << std::endl;
+  for(int i=0; i <16; i++)
+  {
+    std::cout<< " " <<std::hex << (int)rxpacket[i];
+  }
+  std::cout << ""<<std::endl;
+*/
   if (result == COMM_SUCCESS && txpacket[PKT_ID] == rxpacket[PKT_ID])
   {
     if (error != 0)
@@ -647,6 +664,15 @@ int Protocol2PacketHandler::readRx(PortHandler *port, uint8_t id, uint16_t lengt
     result = rxPacket(port, rxpacket);
   } while (result == COMM_SUCCESS && rxpacket[PKT_ID] != id);
 
+  //PacketRead
+
+  /*std::cout << "rxpacket" << std::endl;
+  for(int i=0; i <26; i++)
+  {
+    std::cout<< " " <<std::hex << (int)rxpacket[i];
+  }
+  std::cout << ""<<std::endl;*/
+
   if (result == COMM_SUCCESS && rxpacket[PKT_ID] == id)
   {
     if (error != 0)
@@ -657,8 +683,8 @@ int Protocol2PacketHandler::readRx(PortHandler *port, uint8_t id, uint16_t lengt
       data[s] = rxpacket[PKT_PARAMETER0 + 1 + s];
     }
     //memcpy(data, &rxpacket[PKT_PARAMETER0+1], length);
-  }
 
+  }
   free(rxpacket);
   //delete[] rxpacket;
   return result;
@@ -926,7 +952,14 @@ int Protocol2PacketHandler::syncReadTx(PortHandler *port, uint16_t start_address
   result = txPacket(port, txpacket);
   if (result == COMM_SUCCESS)
     port->setPacketTimeout((uint16_t)((11 + data_length) * param_length));
-
+  //PacketSend
+ /*std::cout << "txpacket" << std::endl;
+  for(int i=0; i <36; i++)
+  {
+    std::cout<<" " <<std::hex << (int)txpacket[i];
+  }
+  std::cout << ""<<std::endl;
+*/
   free(txpacket);
   return result;
 }
@@ -953,7 +986,14 @@ int Protocol2PacketHandler::syncWriteTxOnly(PortHandler *port, uint16_t start_ad
   //memcpy(&txpacket[PKT_PARAMETER0+4], param, param_length);
 
   result = txRxPacket(port, txpacket, 0, 0);
-
+/*
+  std::cout << "txpackettttttt" << std::endl;
+  for(int i=0; i <24; i++)
+  {
+    std::cout<<" " <<std::hex << (int)txpacket[i];
+  }
+  std::cout << ""<<std::endl;
+*/
   free(txpacket);
   //delete[] txpacket;
   return result;
