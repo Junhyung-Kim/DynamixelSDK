@@ -119,8 +119,9 @@ class WINDECLSPEC GroupSyncRead
   /// @return   when there is packet recieved
   /// @return or the other communication results
   ////////////////////////////////////////////////////////////////////////////////
-  int     rxPacket();
+  int     rxPacket(int *nReceived);
 
+//  int     rxPacket();
   ////////////////////////////////////////////////////////////////////////////////
   /// @brief The function that transmits and receives the packet which might be come from the Dynamixel
   /// @return COMM_NOT_AVAILABLE
@@ -131,8 +132,8 @@ class WINDECLSPEC GroupSyncRead
   /// @return   when there is packet recieved
   /// @return or the other communication results which come from GroupBulkRead::txPacket or GroupBulkRead::rxPacket
   ////////////////////////////////////////////////////////////////////////////////
-  int     txRxPacket();
-
+  int     txRxPacket(int *rCount);
+//  int     txRxPacket();
   ////////////////////////////////////////////////////////////////////////////////
   /// @brief The function that checks whether there are available data which might be received by GroupSyncRead::rxPacket or GroupSyncRead::txRxPacket
   /// @param id Dynamixel ID

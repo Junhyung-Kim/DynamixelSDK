@@ -121,10 +121,10 @@ int GroupSyncRead::txPacket()
   return ph_->syncReadTx(port_, start_address_, data_length_, param_, (uint16_t)id_list_.size() * 1);
 }
 
-int GroupSyncRead::rxPacket()
+int GroupSyncRead::rxPacket(int *nReceived)
 {
   last_result_ = false;
-
+  *nReceived = 0;
   if (ph_->getProtocolVersion() == 1.0)
     return COMM_NOT_AVAILABLE;
 
@@ -139,8 +139,13 @@ int GroupSyncRead::rxPacket()
     uint8_t id = id_list_[i];
 
     result = ph_->readRx(port_, id, data_length_, data_list_[id], error_list_[id]);
+
+    if (result == COMM_SUCCESS)
+    {
+       (*nReceived)++;
+    }
     if (result != COMM_SUCCESS)
-      return result;
+    return result;
   }
 
   if (result == COMM_SUCCESS)
@@ -149,7 +154,7 @@ int GroupSyncRead::rxPacket()
   return result;
 }
 
-int GroupSyncRead::txRxPacket()
+int GroupSyncRead::txRxPacket(int *rCount)
 {
   if (ph_->getProtocolVersion() == 1.0)
     return COMM_NOT_AVAILABLE;
@@ -160,7 +165,7 @@ int GroupSyncRead::txRxPacket()
   if (result != COMM_SUCCESS)
     return result;
 
-  return rxPacket();
+  return rxPacket(&(*rCount));
 }
 
 bool GroupSyncRead::isAvailable(uint8_t id, uint16_t address, uint16_t data_length)
@@ -176,8 +181,11 @@ bool GroupSyncRead::isAvailable(uint8_t id, uint16_t address, uint16_t data_leng
 
 uint32_t GroupSyncRead::getData(uint8_t id, uint16_t address, uint16_t data_length)
 {
-  if (isAvailable(id, address, data_length) == false)
-    return 0;
+  /*if (isAvailable(id, address, data_length) == false)
+  {
+    std::cout << "NON_avAILABLE"<< std::endl;
+    r eturn 0;
+  }*/
 
   switch(data_length)
   {
